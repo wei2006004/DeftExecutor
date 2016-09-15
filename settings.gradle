@@ -1,2 +1,4 @@
 rootProject.name = 'deft'
+include 'deft-executor-lib'
+include 'deft-executor-demo'
 
