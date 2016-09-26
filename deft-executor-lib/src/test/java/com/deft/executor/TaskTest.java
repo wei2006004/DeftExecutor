@@ -27,8 +27,8 @@ public class TaskTest {
                 return "hello";
             }
 
-            public void call(String parm) {
-                assertThat("hello10").isEqualTo(parm);
+            public void call(String[] parm) {
+                assertThat("hello10").isEqualTo(parm[0]);
             }
         };
         DTask task = new DTask();
@@ -40,5 +40,41 @@ public class TaskTest {
 
         task.ubBind();
         assertFalse(task.isBind());
+    }
+
+    @Test
+    public void testDefaultCallBack(){
+        DefaultTask task = new DefaultTask();
+        task.run();
+        assertFalse(task.isBind());
+    }
+
+    private static class DefaultTask extends Task<ICall> {
+
+        @Override
+        public void run() {
+            ICall proxy = proxy();
+
+            assertThat(proxy.getBoolean()).isEqualTo(false);
+            assertThat(proxy.getInt()).isEqualTo(0);
+            assertThat(proxy.getString()).isEmpty();
+
+            proxy.setBoolean(true);
+            proxy.setInt(2);
+            proxy.setString("");
+            proxy.call(null);
+        }
+    }
+
+    private static class DTask extends Task<ICall> {
+        public void run() {
+            proxy().call(new String[]{proxy().getString() + proxy().getInt()});
+        }
+    }
+
+    private static class TTask<T> extends DTask {
+    }
+
+    private static class BTask extends TTask<String> {
     }
 }
