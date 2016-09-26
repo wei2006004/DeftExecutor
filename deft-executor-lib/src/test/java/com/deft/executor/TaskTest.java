@@ -27,7 +27,7 @@ public class TaskTest {
                 return "hello";
             }
 
-            public void call(String[] parm) {
+            public void callSync(String[] parm) {
                 assertThat("hello10").isEqualTo(parm[0]);
             }
         };
@@ -62,13 +62,13 @@ public class TaskTest {
             proxy.setBoolean(true);
             proxy.setInt(2);
             proxy.setString("");
-            proxy.call(null);
+            proxy.callSync(null);
         }
     }
 
     private static class DTask extends Task<ICall> {
         public void run() {
-            proxy().call(new String[]{proxy().getString() + proxy().getInt()});
+            proxy().callSync(new String[]{proxy().getString() + proxy().getInt()});
         }
     }
 

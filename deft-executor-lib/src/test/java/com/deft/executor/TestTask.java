@@ -3,7 +3,7 @@ package com.deft.executor;
 /**
  * Created by Administrator on 2016/9/26.
  */
-class TestTask extends Task<ICall>{
+public class TestTask extends Task<ICall>{
     int ivalue;
     String svalue;
     boolean bvalue;
@@ -16,6 +16,8 @@ class TestTask extends Task<ICall>{
         proxy().setString(svalue);
 
         proxy().call(args);
+        proxy().callSync(args);
+        proxy().callAsync(args);
 
         ivalue = proxy().getInt();
         svalue = proxy().getString();
