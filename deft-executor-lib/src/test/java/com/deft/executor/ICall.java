@@ -14,7 +14,7 @@ interface ICall {
     }
 
     default String getString(){
-        return "hello";
+        return "";
     }
 
     default void setBoolean(boolean value){}
