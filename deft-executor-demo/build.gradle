@@ -6,12 +6,12 @@ apply plugin: 'application'
 
 mainClassName = "com.deft.example.Main"
 
-sourceCompatibility = 1.5
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    compile project(':deft-executor-lib')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
