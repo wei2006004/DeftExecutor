@@ -84,19 +84,18 @@ public class TaskServiceTest {
 
     @Test
     public void testPostHandler() throws Exception {
-        // TODO: 2016/9/26
-//        resetValues();
-//
-//        setValues(true, 3, "bbb");
-//        Future future = mTaskService.post(mTask, mCall);
-//        future.get();
-//        assertValue(true, 3, "bbb");
-//
-//        assertThat(mCurrentThreadId).isNotEqualTo(mCall.syncCallThreadId);
-//        assertThat(mCurrentThreadId).isNotEqualTo(mCall.asyncCallThreadId);
-//        assertThat(mCurrentThreadId).isNotEqualTo(mCall.callThreadId);
-//
-//        assertCallbackThreadId(true);
+        resetValues();
+
+        setValues(true, 1, "bbb");
+        Future future = mTaskService.post(mTask, mCall, new SimpleHandler(Executors.newSingleThreadExecutor()));
+        future.get();
+        assertValue(true, 1, "bbb");
+
+        assertThat(mCurrentThreadId).isNotEqualTo(mCall.syncCallThreadId);
+        assertThat(mCurrentThreadId).isNotEqualTo(mCall.asyncCallThreadId);
+        assertThat(mCurrentThreadId).isNotEqualTo(mCall.callThreadId);
+
+        assertCallbackThreadId(true);
     }
 
     private void resetValues() {

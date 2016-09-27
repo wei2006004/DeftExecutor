@@ -37,7 +37,7 @@ public class TaskService {
         return mExecutorService.submit(task);
     }
 
-    public <T> Future post(Task<T> task, T callback, AsyncHandler handler) {
+    public <T> Future post(Task<T> task, T callback, IHandler handler) {
         Class callbackClass = task.getCallBackClass();
         T asyncCallback = createAsyncCallback(callback, callbackClass, handler);
         task.bindCallback(asyncCallback);
@@ -45,7 +45,7 @@ public class TaskService {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T createAsyncCallback(T callback, Class callbackClass, AsyncHandler handler) {
+    private <T> T createAsyncCallback(T callback, Class callbackClass, IHandler handler) {
         return (T) Proxy.newProxyInstance(
                 getClass().getClassLoader(),
                 new Class[]{callbackClass},
@@ -54,9 +54,9 @@ public class TaskService {
 
     private static class AsyncInvocationHandler<T> implements InvocationHandler {
         private T mCallback;
-        private AsyncHandler mHandler;
+        private IHandler mHandler;
 
-        AsyncInvocationHandler(T callback, AsyncHandler handler) {
+        AsyncInvocationHandler(T callback, IHandler handler) {
             mCallback = callback;
             mHandler = handler;
         }
