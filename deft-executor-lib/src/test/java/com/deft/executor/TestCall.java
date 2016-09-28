@@ -4,9 +4,9 @@ package com.deft.executor;
  * Created by Administrator on 2016/9/26.
  */
 public class TestCall implements ICall{
-    int ivalue;
-    String svalue;
-    boolean bvalue;
+    public int ivalue;
+    public String svalue;
+    public boolean bvalue;
 
     @Override
     public int getInt() {
@@ -23,9 +23,9 @@ public class TestCall implements ICall{
         return bvalue;
     }
 
-    long callThreadId;
-    long syncCallThreadId;
-    long asyncCallThreadId;
+    public long callThreadId;
+    public long syncCallThreadId;
+    public long asyncCallThreadId;
 
     @Override
     public void call(String[] args) {
