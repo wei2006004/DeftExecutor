@@ -22,6 +22,7 @@ public class TaskService {
     public static <T> void run(Task<T> task, T callback) {
         task.bindCallback(callback);
         task.run();
+        task.ubBind();
     }
 
     public Future post(Runnable runnable) {
@@ -29,13 +30,30 @@ public class TaskService {
     }
 
     public <T> Future post(Task<T> task, T callback) {
-        task.bindCallback(callback);
-        return mExecutorService.submit(task);
+        DefaultTask defaultTask = new DefaultTask(task, callback);
+        return mExecutorService.submit(defaultTask);
     }
 
     public <T> Future post(Task<T> task, T callback, ExecutorService executorService) {
         T asyncCallback = ProxyUtils.createHandlerProxy(callback, task.getCallBackClass(), executorService);
-        task.bindCallback(asyncCallback);
-        return mExecutorService.submit(task);
+        DefaultTask defaultTask = new DefaultTask(task, asyncCallback);
+        return mExecutorService.submit(defaultTask);
+    }
+
+    private static class DefaultTask<T> implements Runnable{
+        private Task mTask;
+        private T mCallback;
+
+        DefaultTask(Task<T> task, T callback){
+            mTask = task;
+            mCallback = callback;
+        }
+
+        @Override
+        public void run() {
+            mTask.bindCallback(mCallback);
+            mTask.run();
+            mTask.ubBind();
+        }
     }
 }

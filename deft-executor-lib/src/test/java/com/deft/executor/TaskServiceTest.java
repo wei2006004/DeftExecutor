@@ -41,6 +41,8 @@ public class TaskServiceTest {
 
         setValues(true, 3, "bbb");
         TaskService.run(mTask, mCall);
+
+        assertThat(mTask.isBind()).isEqualTo(false);
         assertValue(true, 3, "bbb");
 
         assertThat(mCurrentThreadId).isEqualTo(mCall.syncCallThreadId);
@@ -58,6 +60,8 @@ public class TaskServiceTest {
         mTask.svalue = "hh";
         Future future = mTaskService.post(mTask);
         future.get();
+
+        assertThat(mTask.isBind()).isEqualTo(false);
         assertValue(false, 0, "");
 
         resetValues();
@@ -65,6 +69,8 @@ public class TaskServiceTest {
         setValues(true, 3, "bbb");
         future = mTaskService.post(mTask, mCall);
         future.get();
+
+        assertThat(mTask.isBind()).isEqualTo(false);
         assertValue(true, 3, "bbb");
 
         assertThat(mCurrentThreadId).isNotEqualTo(mCall.syncCallThreadId);
@@ -92,6 +98,8 @@ public class TaskServiceTest {
         setValues(true, 1, "bbb");
         Future future = mTaskService.post(mTask, mCall, executorService);
         future.get();
+
+        assertThat(mTask.isBind()).isEqualTo(false);
         assertValue(true, 1, "bbb");
 
         executorService.awaitTermination(500, TimeUnit.MILLISECONDS);
