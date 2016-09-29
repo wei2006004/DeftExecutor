@@ -3,8 +3,10 @@ package com.deft.executor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,18 +86,22 @@ public class TaskServiceTest {
 
     @Test
     public void testPostHandler() throws Exception {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         resetValues();
 
         setValues(true, 1, "bbb");
-        Future future = mTaskService.post(mTask, mCall, new SimpleHandler(Executors.newSingleThreadExecutor()));
+        Future future = mTaskService.post(mTask, mCall, new SimpleHandler(executorService));
         future.get();
         assertValue(true, 1, "bbb");
+
+        executorService.awaitTermination(500, TimeUnit.MILLISECONDS);
 
         assertThat(mCurrentThreadId).isNotEqualTo(mCall.syncCallThreadId);
         assertThat(mCurrentThreadId).isNotEqualTo(mCall.asyncCallThreadId);
         assertThat(mCurrentThreadId).isNotEqualTo(mCall.callThreadId);
 
         assertCallbackThreadId(true);
+        executorService.shutdown();
     }
 
     private void resetValues() {

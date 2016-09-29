@@ -72,6 +72,7 @@ public class ProxyUtilsTest {
         long currentThreadId = Thread.currentThread().getId();
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+        log("### ICall handler proxy");
         TCall tCall = new TCall();
         ICall iCall = ProxyUtils.createHandlerProxy(tCall, ICall.class, executorService);
         iCall.call(null);
@@ -82,6 +83,20 @@ public class ProxyUtilsTest {
         assertThat(tCall.callThreadId).isNotEqualTo(currentThreadId);
         assertThat(tCall.syncCallThreadId).isEqualTo(currentThreadId);
         assertThat(tCall.asyncCallThreadId).isNotEqualTo(currentThreadId);
+        logend();
+
+        log("### InnerCall handler proxy");
+        BCall bCall = new BCall();
+        InnerCall innerCall = ProxyUtils.createHandlerProxy(bCall, InnerCall.class, executorService);
+        innerCall.call(null);
+        innerCall.callSync(null);
+        innerCall.callAsync(null);
+        assertThat(innerCall.getBoolean()).isEqualTo(true);
+        assertThat(innerCall.getInt()).isEqualTo(10);
+        assertThat(innerCall.getString()).isEqualTo("hhh");
+        executorService.awaitTermination(500, TimeUnit.MILLISECONDS);
+        executorService.shutdown();
+        logend();
     }
 
     static class TCall extends TestCall {
@@ -112,17 +127,17 @@ public class ProxyUtilsTest {
 
         @Override
         public boolean getBoolean() {
-            return false;
+            return true;
         }
 
         @Override
         public int getInt() {
-            return 0;
+            return 10;
         }
 
         @Override
         public String getString() {
-            return null;
+            return "hhh";
         }
 
         @Override
