@@ -90,7 +90,7 @@ public class TaskServiceTest {
         resetValues();
 
         setValues(true, 1, "bbb");
-        Future future = mTaskService.post(mTask, mCall, new SimpleHandler(executorService));
+        Future future = mTaskService.post(mTask, mCall, executorService);
         future.get();
         assertValue(true, 1, "bbb");
 

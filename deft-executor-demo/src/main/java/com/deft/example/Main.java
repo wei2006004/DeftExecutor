@@ -1,6 +1,5 @@
 package com.deft.example;
 
-import com.deft.executor.IHandler;
 import com.deft.executor.Task;
 import com.deft.executor.TaskService;
 
@@ -42,7 +41,7 @@ public class Main {
 
         ExecutorService handlerExecutor = Executors.newSingleThreadExecutor();
         log("post(task, call, handler)");
-        future = taskService.post(testTask, testCall, new SimpleHandler(handlerExecutor));
+        future = taskService.post(testTask, testCall, handlerExecutor);
         future.get();
         logend();
 
@@ -108,24 +107,6 @@ public class Main {
             proxy().callAsync();
 
             System.out.println("afterRun, threadId:" + Thread.currentThread().getId());
-        }
-    }
-
-    static class SimpleHandler implements IHandler {
-        private ExecutorService executorService;
-
-        public SimpleHandler(ExecutorService executorService) {
-            this.executorService = executorService;
-        }
-
-        @Override
-        public void submit(Runnable runnable) {
-            executorService.submit(runnable);
-        }
-
-        @Override
-        public void handleThrowable(Throwable throwable) {
-            throwable.printStackTrace();
         }
     }
 }
