@@ -2,6 +2,8 @@ package com.deft.example;
 
 import com.deft.executor.Task;
 import com.deft.executor.TaskService;
+import com.deft.executor.annotation.Asynchronous;
+import com.deft.executor.annotation.Synchronous;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,13 +18,16 @@ public class Main {
         TestCall testCall = new TestCall();
         TestTask testTask = new TestTask();
 
+        log("Main thread id: " + Thread.currentThread().getId());
+        log("task.run()");
+        testTask.run();     // use default proxy
+        logend();
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         TaskService taskService = new TaskService(executorService);
 
-        log("Main thread id: " + Thread.currentThread().getId());
-
         log("run(task)");
-        TaskService.run(testTask);
+        TaskService.run(testTask);      // use default proxy
         logend();
 
         log("run(task, call)");
@@ -58,27 +63,28 @@ public class Main {
         System.out.println();
     }
 
-//    interface ICall {
-//        @Synchronous
-//        String getString();
-//
-//        @Synchronous
-//        void setString(String value);
-//
-//        @Synchronous
-//        default void callSync() {
-//            System.out.println("callSync, threadId:" + Thread.currentThread().getId());
-//        }
-//
-//        @Asynchronous
-//        default void callAsync() {
-//            System.out.println("callAsync, threadId:" + Thread.currentThread().getId());
-//        }
-//
-//        default void call() {
-//            System.out.println("call, threadId:" + Thread.currentThread().getId());
-//        }
-//    }
+    // the callback interface must define public
+    public interface ICall {
+        @Synchronous
+        String getString();
+
+        @Synchronous
+        void setString(String value);
+
+        @Synchronous
+        default void callSync() {
+            System.out.println("callSync, threadId:" + Thread.currentThread().getId());
+        }
+
+        @Asynchronous
+        default void callAsync() {
+            System.out.println("callAsync, threadId:" + Thread.currentThread().getId());
+        }
+
+        default void call() {
+            System.out.println("call, threadId:" + Thread.currentThread().getId());
+        }
+    }
 
     static class TestCall implements ICall {
         @Override
